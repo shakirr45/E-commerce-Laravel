@@ -43,5 +43,51 @@ Route::post('/add_catagory',[AdminController::class, 'add_catagory']);
 // Delete catagory ====>
 Route::get('/delete_catagory/{id}',[AdminController::class, 'delete_catagory']);
 
+// Add Product ====>
+Route::get('/view_product',[AdminController::class, 'view_product']);
+
+//add product ====>
+Route::post('/add_product',[AdminController::class, 'add_product']);
+
+//Show product as admin ====>
+Route::get('/show_product',[AdminController::class, 'show_product']);
+
+//Delete Product as Admin ===>
+Route::get('/delete_product/{id}',[AdminController::class, 'delete_product']);
+
+//Update product as Admin ====>
+Route::get('/update_product/{id}',[AdminController::class, 'update_product']);
+
+//Update product as Admin ====>
+Route::post('/edit_product/{id}',[AdminController::class, 'edit_product']);
+
+// product Detais ====>
+Route::get('product_details/{id}',[HomeController::class, 'product_details']);
+
+//add to cart ====>
+Route::post('/add_cart/{id}',[HomeController::class, 'add_cart']);
+
+//show to cart ====>
+Route::get('/show_cart',[HomeController::class, 'show_cart']);
+
+//remove cart product as user ====>
+Route::get('remove_cart/{id}',[HomeController::class, 'remove_cart']);
+
+//cash order ================>>
+Route::get('/cash_order',[HomeController::class, 'cash_order']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
