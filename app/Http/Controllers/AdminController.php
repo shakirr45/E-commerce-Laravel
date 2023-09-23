@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 use App\Models\Catagory;
 use App\Models\Product;
+use App\Models\Order;
+//for pdf=====>
+use PDF;
 
 
 
@@ -117,7 +120,34 @@ class AdminController extends Controller
         }
         $product->save();
         return  redirect()->back()->with('message','Product Updated Successfully');
+    }
 
+    //for view order as order =======>>
+    public function order(){
+
+        $order_data = Order::all();
+
+        return view('admin.order',compact('order_data'));
+    }
+
+    //for delivered ====> 
+    public function delivered($id){
+        $order = Order::find($id);
+        $order->delivery_status ='delivered';
+        $order->payment_status ='paid';
+
+        $order->save();
+        return redirect()->back();
+    }
+
+    //for download pdf ====>
+    public function print_pdf($id){
+        $order= Order::find($id);
+        $pdf = PDF::loadView('admin.pdf',compact('order'));
+        return $pdf->download('order_details.pdf');
 
     }
+
+
+
 }

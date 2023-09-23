@@ -20,6 +20,7 @@ use App\Http\Controllers\AdminController;
 
 Route::get('/', [HomeController::class, 'index']);
 
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -31,7 +32,8 @@ Route::middleware([
 });
 
 // For Admin and User Login ====>
-Route::get('redirect',[HomeController::class, 'redirect']);
+// for mail varification just add ----->middleware('auth','verified') [note go also config/fortify and uncomment] =======>
+Route::get('redirect',[HomeController::class, 'redirect'])->middleware('auth','verified');
 
 
 // catagory page ====>
@@ -77,6 +79,22 @@ Route::get('remove_cart/{id}',[HomeController::class, 'remove_cart']);
 Route::get('/cash_order',[HomeController::class, 'cash_order']);
 
 
+
+
+//For Stripe payment getwway==========>
+Route::get('/stripe/{totalprice}',[HomeController::class, 'stripe']);
+//mod this ===== Route::post('stripe', 'stripePost')->name('stripe.post');====>>
+Route::post('stripe/{totalprice}',[HomeController::class,'stripePost'])->name('stripe.post');
+
+
+// for view order as admin =====>
+Route::get('/order',[AdminController::class, 'order']);
+
+//For Delivered ========>
+Route::get('/delivered/{id}',[AdminController::class, 'delivered']);
+
+//For Download PDF ====> 
+Route::get('/print_pdf/{id}',[AdminController::class, 'print_pdf']);
 
 
 
