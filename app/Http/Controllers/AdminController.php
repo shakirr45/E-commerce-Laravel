@@ -11,6 +11,10 @@ use App\Models\Order;
 //for pdf=====>
 use PDF;
 
+//for email=====>
+use Notification;
+use App\Notifications\MyFirstNotification;
+
 
 
 
@@ -145,6 +149,38 @@ class AdminController extends Controller
         $order= Order::find($id);
         $pdf = PDF::loadView('admin.pdf',compact('order'));
         return $pdf->download('order_details.pdf');
+
+    }
+
+    //For Sending Email =====>
+    public function send_email($id){
+        $order = Order::find($id);
+        return view('admin.email_info',compact('order'));
+    }
+
+    //send email =====>
+    public function send_user_email(Request $request , $id){
+        $order = Order::find($id);
+        //its come from app notifications----->$details
+        $details = [
+            'greeting' =>$request->greeting,
+            'firstline' =>$request->firstline,
+            //'body' =>'anything i can write',
+            'body' =>$request->body,
+            'button' =>$request->button,
+            'url' =>$request->url,
+            'lastline' =>$request->lastline,
+
+        ];
+        Notification::send($order, new MyFirstNotification($details));
+        return redirect()->back();
+    }
+
+    //for search as admin in order table======>
+    public function search(Request $request){
+        $search = $request->search;
+        $order_data = Order::where('name' , 'like', '%' .$search.'%')->orWhere('phone' , 'like' , '%'.$search. '%' )->get();
+        return view('admin.order',compact('order_data'));
 
     }
 

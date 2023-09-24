@@ -37,6 +37,16 @@
           <div class="content-wrapper">
             <h1 class="title_deg">All Orders</h1>
 
+            <div style="padding-left: 400px; padding-bottom:30px;">
+            <!-- //for search =================> -->
+            <form action="{{url('search')}}" method="GET">
+              @csrf
+              <input style="color:black;" type="text" name="search">
+              <input type="submit" class="btn btn-success" value="search">
+            </form>
+            </div>
+
+
           <table class="table_deg">
             <tr class="th_deg">
                 <th style="padding: 10px;">Name</th>
@@ -51,12 +61,12 @@
                 <th style="padding: 10px;">Product Image</th>
                 <th style="padding: 10px;">Delivered</th>
                 <th style="padding: 10px;">Print PDF</th>
-
-
+                <th style="padding: 10px;">Send Email</th>
 
             </tr>
 
-            @foreach($order_data as $order_data)
+            <!-- //if use empty -->
+            @forelse($order_data as $order_data)
             <tr>
                 <td>{{$order_data->name}}</td>
                 <td>{{$order_data->email}}</td>
@@ -75,14 +85,25 @@
                      <p style="color: green;">Delivered</p>
                     @endif
                 </td>
+
                 <td>
                     <a href="{{url('print_pdf',$order_data->id)}}" class="btn btn-secondary">Print PDF</a>
+                </td>
+
+                <td>
+                    <a href="{{url('send_email',$order_data->id)}}" class="btn btn-info">send Email</a>
                 </td>
 
 
             </tr>
 
-            @endforeach
+            <!-- //if there is any wrong dast value then show a message=======> -->
+            @empty
+            <tr>
+              <td colspan="16">No Data Found</td>
+            </tr>
+
+            @endforelse
           </table>
 
             </div>

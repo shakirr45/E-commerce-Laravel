@@ -97,6 +97,22 @@ Route::get('/delivered/{id}',[AdminController::class, 'delivered']);
 Route::get('/print_pdf/{id}',[AdminController::class, 'print_pdf']);
 
 
+//For Sending Email as admin =====>
+Route::get('/send_email/{id}',[AdminController::class, 'send_email']);
+
+//For Sending Email as admin from form ====>
+Route::post('/send_user_email/{id}',[AdminController::class, 'send_user_email']);
+
+//For search as admin in Order table ========>
+Route::get('/search',[AdminController::class, 'search']);
+
+
+
+
+
+
+
+
 
 
 

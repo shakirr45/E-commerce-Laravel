@@ -47,7 +47,24 @@ class HomeController extends Controller
     public function redirect(){
         $usertype = Auth::user()->usertype;
         if($usertype == '1'){
-            return view('admin.adminhome');
+            //for show all count value in dashboard ======>
+            $total_product = Product::all()->count();
+            $total_order = Order::all()->count();
+            $total_user = User::all()->count();
+
+            $order_revinue = Order::all();
+            $total_revinue = 0;
+            foreach($order_revinue as $order_revinue){
+                $total_revinue = $total_revinue + $order_revinue->price;
+            }
+
+            $total_dalivered = Order::where('delivery_status','=' , 'delivered')->get()->count();
+
+            $total_processing = Order::where('delivery_status','=' , 'processing')->get()->count();
+
+
+
+            return view('admin.adminhome',compact('total_product','total_order','total_user','total_revinue','total_dalivered','total_processing'));
 
         }else{
         //product data show =====>
@@ -242,7 +259,7 @@ class HomeController extends Controller
 
 
 
-      
+
         Session::flash('success', 'Payment successful!');
               
         return back();
