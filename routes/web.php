@@ -128,7 +128,7 @@ Route::get('products',[HomeController::class, 'products']);
 // all Product search ====>
 Route::get('/product_search_all',[HomeController::class, 'product_search_all']);
 
-
+// ============
 
 
 
