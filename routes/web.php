@@ -106,6 +106,32 @@ Route::post('/send_user_email/{id}',[AdminController::class, 'send_user_email'])
 //For search as admin in Order table ========>
 Route::get('/search',[AdminController::class, 'search']);
 
+//Order Show and Cancel =====>
+Route::get('/show_order',[HomeController::class, 'show_order']);
+
+//for cancel order=====>
+Route::get('/cancel_order/{id}',[HomeController::class, 'cancel_order']);
+
+//for comment =====>
+Route::post('/add_comment',[HomeController::class, 'add_comment']);
+
+//for reply ====>
+Route::post('/add_reply',[HomeController::class, 'add_reply']);
+
+//Product search ====>
+Route::get('/product_search',[HomeController::class, 'product_search']);
+
+
+
+//for view product as user in home page ====>
+Route::get('products',[HomeController::class, 'products']);
+// all Product search ====>
+Route::get('/product_search_all',[HomeController::class, 'product_search_all']);
+
+
+
+
+
 
 
 

@@ -17,18 +17,28 @@ use App\Notifications\MyFirstNotification;
 
 
 
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+
+
+
 
 class AdminController extends Controller
 {
-    //
+
     //  catagory page ====>
-
     public function view_catagory(){
-        $data = Catagory::all();
-        return view('admin.catagory',compact('data'));
-    }
-    //  add catagory ====>
+        if(Auth::id()){
+            $data = Catagory::all();
+            return view('admin.catagory',compact('data'));
+        }else{
+            return redirect('login/');
+        }
 
+    }
+
+
+    //  add catagory ====>
     public function add_catagory(Request $request){
 
         $data = $request->name;
@@ -43,17 +53,23 @@ class AdminController extends Controller
     } 
 
     // Delete catagory ====>
-
     public function delete_catagory($id){
         $data = Catagory::find($id);
         $data->delete();
         return redirect()->back()->with('message','Catagory Deleted Successfully');
     
     }
+
     //Add Product ====>
+
     public function view_product(){
-        $data = Catagory::all();
-        return view('admin.product',compact('data'));
+            if(Auth::id()){
+                $data = Catagory::all();
+                return view('admin.product',compact('data'));
+            }else{
+                return redirect('login/');
+            }
+
     }
     // Add product =====>
     public function add_product(Request $request){
@@ -82,9 +98,15 @@ class AdminController extends Controller
         return  redirect()->back()->with('message','Product added Successfully');
     }
 
-    public function show_product(){
-        $product = Product::all();
-        return view('admin.show_product',compact('product'));
+    public function show_product(){        
+        if(Auth::id()){
+            $product = Product::all();
+            return view('admin.show_product',compact('product'));
+           
+        }else{
+            return redirect('login/');
+        }
+
     }
 
     // Delete product as admin ======>
@@ -95,14 +117,22 @@ class AdminController extends Controller
     }
 
     //update product ===>
-    public function update_product($id){
+    public function update_product($id){       
+        if(Auth::id()){
+            $data = Product::find($id);
+            return view('admin.update_product',compact('data'));
+        }else{
+            return redirect('login/');
+        }
 
-        $data = Product::find($id);
-        return view('admin.update_product',compact('data'));
     }
     //update product ====>
     public function edit_product(Request $request ,$id){
-        $product = Product::find($id);
+
+        
+        if(Auth::id()){
+
+            $product = Product::find($id);
 
         $product->title=$request->title;
 
@@ -124,14 +154,23 @@ class AdminController extends Controller
         }
         $product->save();
         return  redirect()->back()->with('message','Product Updated Successfully');
+           
+        }else{
+            return redirect('login/');
+        }
+        
     }
 
     //for view order as order =======>>
     public function order(){
+        if(Auth::id()){
 
-        $order_data = Order::all();
-
-        return view('admin.order',compact('order_data'));
+            $order_data = Order::all();
+            return view('admin.order',compact('order_data'));
+           
+        }else{
+            return redirect('login/');
+        }
     }
 
     //for delivered ====> 

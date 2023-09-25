@@ -1,21 +1,21 @@
 <section class="product_section layout_padding">
          <div class="container">
             <div class="heading_container heading_center">
-               <h2>
-                  Our <span>products</span>
-               </h2>
-               <br>
+
 
                <div>
                   <!-- //for search product =====> -->
-               <form action="{{url('product_search')}}" method="GET">
+               <form action="{{url('product_search_all')}}" method="GET">
                   @csrf
                   <input style="width:500px;" type="text" name="search" placeholder="Search For Something">
                   <input type="submit" value="Search">
                </form>
 
-               </div>               
+               </div>
+
+
             </div>
+
 
             @if(session()->has('message'))
           <div class="alert alert-success"> 

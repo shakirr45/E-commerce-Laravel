@@ -15,6 +15,13 @@ use App\Models\Order;
 use Session;
 use Stripe;
 
+use App\Models\Comment;
+use App\Models\Reply;
+
+//for sweetAlert ====>
+use RealRashid\SweetAlert\Facades\Alert;
+
+
 
 
 class HomeController extends Controller
@@ -25,17 +32,33 @@ class HomeController extends Controller
 
         if(Auth::id()){
 
-            
+
         //product data show =====>
         // $product =Product::all();
 
         $id = Auth::user()->id;
         $count = Cart::where('user_id',$id)->count();
 
-        return view('home.userpage',compact('product','count'));
+        //for comment show in home page ====>
+            //show update comment up====>
+            $comment = Comment::orderby('id','desc')->get();
+
+            //for comment reply show in home page ====>
+            $reply = Reply::all();
+
+
+        return view('home.userpage',compact('product','count','comment','reply'));
 
         }else{
-        return view('home.userpage',compact('product'));
+
+            //for comment show in home page ====>
+            //show update comment up====>
+            $comment = Comment::orderby('id','desc')->get();
+
+            //for comment reply show in home page ====>
+            $reply = Reply::all();
+
+        return view('home.userpage',compact('product','comment','reply'));
 
         }
 
@@ -76,7 +99,16 @@ class HomeController extends Controller
         $id = Auth::user()->id;
         $count = Cart::where('user_id',$id)->count();
 
-            return view('home.userpage',compact('product','count'));
+        //for Comment show ====>
+        // $comment = Comment::all();
+        //show update comment up====>
+        $comment = Comment::orderby('id','desc')->get();
+
+
+        //for comment reply show in home page ====>
+        $reply = Reply::all();
+
+            return view('home.userpage',compact('product','count','comment','reply'));
 
         }
     }
@@ -94,6 +126,7 @@ class HomeController extends Controller
 
             //for get the user Data------------------->
             $user = Auth::user();
+            $userid = $user->id;
             // dd($user);
             $user_id = $user->id;
             $user_name = $user->name;
@@ -106,8 +139,31 @@ class HomeController extends Controller
             $product = Product::find($id);
             // dd($product);
 
+            //for this code increase value of same product if add ====>
+            $product_exist_id = Cart::where('product_id', '=' , $id)->where('user_id' , '=' ,$userid)->get('id')->first();
+            if($product_exist_id){
 
-            //insert data to Cart--------------------->
+                $cart =Cart::find($product_exist_id)->first();
+                $quantity=$cart->quantity;
+                $cart->quantity=$quantity + $request->quantity;
+                
+                if($product->discount_price!=null){
+                    $cart->price=$product->discount_price * $cart->quantity;
+
+                }else{
+
+                $cart->price=$product->price * $cart->quantity;
+                }
+
+                $cart->save();
+                //for sweetAlert =======>
+            Alert::success('Product Added Successfully','We have added product to the Cart');
+
+                return redirect()->back()->with('message' , 'Product Added Successfully');
+
+            }else{
+
+                //insert data to Cart--------------------->
             $cart = new Cart;
 
             //for user =========>
@@ -133,11 +189,11 @@ class HomeController extends Controller
 
             //for form data =========>
             $cart->quantity = $request->quantity;
-
             $cart->save();
 
-
-            return redirect()->back();
+            return redirect()->back()->with('message' , 'Product Added Successfully');
+            }
+       
         }else{
             return redirect('/login');
         }
@@ -265,7 +321,146 @@ class HomeController extends Controller
         return back();
     }
 
+    //for show or cancle order order ==========>
 
+    public function show_order(){
+        if(Auth::id()){
+            $id = Auth::user()->id;
+            $count = Cart::where('user_id',$id)->count();
+            $userid = Auth::user()->id;
+            $order = Order::where('user_id', '=' , $userid)->get();
+
+            return view('home.order',compact('count','order'));
+        }else{
+            return redirect('login');
+        }
+    }
+
+    //for Cancel order ====>
+    public function cancel_order($id){
+        $order = Order::find($id);
+        $order->delivery_status = 'You Canceled the order';
+        $order->save();
+        return redirect()->back();
+    }
+
+    //for comment =====>
+    public function add_comment(Request $request){
+        if(Auth::id()){
+
+            $user = Auth::user();
+            $comment = new Comment;
+
+            $comment->name = $user->name;
+            $comment->user_id = $user->id;
+
+
+            $comment->comment = $request->comment;
+            $comment->Save();
+            return redirect()->back();
+        }else{
+            return redirect('/login');
+        }
+    }
+
+    //for reply =====>
+    public function add_reply(Request $request){
+        if(Auth::id()){
+            $reply = new Reply;
+            $reply->name =Auth::user()->name;
+            $reply->user_id =Auth::user()->id;
+
+            //its come from home/userpage.blade ======>
+            $reply->comment_id = $request->commentId;
+            $reply->reply = $request->reply;
+
+            $reply->save();
+            return redirect()->back();
+
+
+
+        }else{
+            return redirect('/login');
+        }
+    }
+
+
+
+
+
+    // for search product ====>
+    public function product_search(Request $request){
+
+        $id = Auth::user()->id;
+        $count = Cart::where('user_id',$id)->count();
+
+         //for comment show in home page ====>
+        //show update comment up====>
+        $comment = Comment::orderby('id','desc')->get();
+
+        //for comment reply show in home page ====>
+        $reply = Reply::all();
+
+        $search_text = $request->search;
+        //name will be same as product before i call thats why{also add ->paginate(10)} =====>
+        $product =Product::where('title', 'LIKE' , "%$search_text%")->orwhere('catagory', 'LIKE' , "%$search_text%")->paginate(10);
+
+        // send the view into home page onto in order table ====>
+        return view('home.userpage',compact('product','comment','reply','count'));
+
+        return redirect()->back();
+
+    }
+
+
+//for view product as user in home page ====> link page
+public function products(){
+
+    $product =Product::paginate(3);
+
+
+     //for comment show in home page ====>
+            //show update comment up====>
+            $comment = Comment::orderby('id','desc')->get();
+
+            //for comment reply show in home page ====>
+            $reply = Reply::all();
+
+            $id = Auth::user()->id;
+            $count = Cart::where('user_id',$id)->count();
+    
+
+
+    return view('home.all_product',compact('product','comment','reply','count'));
+}
+
+
+
+    // for search allll product ====>
+    public function product_search_all(Request $request){
+
+        $id = Auth::user()->id;
+        $count = Cart::where('user_id',$id)->count();
+
+        //for comment show in home page ====>
+       //show update comment up====>
+       $comment = Comment::orderby('id','desc')->get();
+
+       //for comment reply show in home page ====>
+       $reply = Reply::all();
+
+       $search_text = $request->search;
+       //name will be same as product before i call thats why{also add ->paginate(10)} =====>
+       $product =Product::where('title', 'LIKE' , "%$search_text%")->orwhere('catagory', 'LIKE' , "%$search_text%")->paginate(10);
+
+       // send the view into home page onto in order table ====>
+       return view('home.all_product',compact('product','comment','reply','count'));
+
+       return redirect()->back();
+
+   }
+
+    
 
 
 }

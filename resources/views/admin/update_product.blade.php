@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <base href="/public">
+    
     <!-- Required meta tags -->
     @include('admin.css')
 
@@ -89,7 +89,7 @@
 
             <div class="div_design">
                 <label for="">Old Image Here:</label>
-                <img class="img_size" src="product/{{$data->image}}" alt="">
+                <img class="img_size" src="/product/{{$data->image}}" alt="">
             </div>
 
             <div class="div_design">
