@@ -65,7 +65,7 @@
 
             </tr>
 
-            <!-- //if use empty -->
+            <!-- //if use empty forelse user for if i search any data there will no data match -->
             @forelse($order_data as $order_data)
             <tr>
                 <td>{{$order_data->name}}</td>

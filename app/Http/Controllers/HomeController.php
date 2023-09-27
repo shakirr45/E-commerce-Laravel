@@ -237,7 +237,7 @@ class HomeController extends Controller
             $order->name=$data->name;
             $order->email=$data->email;
             $order->phone=$data->phone;
-            $order->address=$data->addres;
+            $order->address=$data->address;
             $order->user_id=$data->user_id;
             $order->image=$data->image;
             $order->product_ttitle=$data->product_ttitle;
